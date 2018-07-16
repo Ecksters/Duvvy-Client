@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 // react plugin for creating charts
 import ChartistGraph from "react-chartist";
+import { connect } from "react-redux";
+import { readTransactions } from "../actions/transactionActions";
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -276,6 +278,7 @@ class Dashboard extends React.Component {
             </Card>
           </GridItem>
         </GridContainer>
+        <p>{JSON.stringify(this.props.transactions)}</p>
       </div>
     );
   }
@@ -285,5 +288,9 @@ Dashboard.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
+const mapStateToProps = state => ({
+  transactions: state.transactions
+})
+
 const styledDashboard = withStyles(dashboardStyle)(Dashboard);
-export default styledDashboard;
+export default connect(mapStateToProps, {readTransactions})(styledDashboard);
