@@ -1,15 +1,14 @@
-import { CREATE_TRANSACTION, CREATE_TRANSACTIONS, READ_TRANSACTIONS } from "../actions/types"
+import { CREATE_BUDGET, READ_BUDGETS } from "../actions/types"
 
 const initialState = {
-    transactions: []
+    budgets: []
 };
 
 export default function(state = initialState, action) {
     switch(action.type) {
-        case READ_TRANSACTIONS:
+        case READ_BUDGETS:
           return action.payload;
-        case CREATE_TRANSACTION:
-        case CREATE_TRANSACTIONS:
+        case CREATE_BUDGET:
           return state.concat(action.payload);
         default:
           return state;

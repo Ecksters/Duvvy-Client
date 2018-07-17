@@ -25,4 +25,4 @@ Special thanks go to:
 ## Links:
 
 + [Original Template from Creative Tim](https://www.creative-tim.com/product/material-dashboard-pro-react).
-+ [Material Dashboard Free React]((https://creativetimofficial.github.io/material-dashboard-react/)
++ [Material Dashboard Free React](https://creativetimofficial.github.io/material-dashboard-react/).

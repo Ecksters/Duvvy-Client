@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 // react plugin for creating charts
 import ChartistGraph from "react-chartist";
 import { connect } from "react-redux";
-import { readTransactions } from "../actions/transactionActions";
+import { readTransactions, createTransaction } from "../actions/transactionActions"
+import { mapStateToProps } from "store"
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -32,6 +33,7 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import CardIcon from "components/Card/CardIcon.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
+import CSVUpload from "components/CustomUpload/CSVUpload.jsx"
 
 import {
   dailySalesChart,
@@ -51,9 +53,10 @@ class Dashboard extends React.Component {
   handleChangeIndex = index => {
     this.setState({ value: index });
   };
-  componentWillMount() {
-    this.props.readTransactions();
+  createTransaction = () => {
+    this.props.createTransaction({"date": "2018-07-15", "description": "Amazon", "amount": 47.95});
   }
+
   render() {
     const { classes } = this.props;
     return (
@@ -278,7 +281,11 @@ class Dashboard extends React.Component {
             </Card>
           </GridItem>
         </GridContainer>
-        <p>{JSON.stringify(this.props.transactions)}</p>
+        <CSVUpload description={"Test"}/>
+        <Button color="transparent" simple justIcon onClick={this.createTransaction}>
+          <Edit className={classes.underChartIcons} />
+        </Button>
+        {JSON.stringify(this.props.transactions)}
       </div>
     );
   }
@@ -288,9 +295,5 @@ Dashboard.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-const mapStateToProps = state => ({
-  transactions: state.transactions
-})
-
 const styledDashboard = withStyles(dashboardStyle)(Dashboard);
-export default connect(mapStateToProps, {readTransactions})(styledDashboard);
+export default connect(mapStateToProps, {readTransactions, createTransaction})(styledDashboard);
