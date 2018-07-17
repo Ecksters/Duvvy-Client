@@ -33,7 +33,6 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import CardIcon from "components/Card/CardIcon.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
-import CSVUpload from "components/CustomUpload/CSVUpload.jsx"
 
 import {
   dailySalesChart,
@@ -281,7 +280,6 @@ class Dashboard extends React.Component {
             </Card>
           </GridItem>
         </GridContainer>
-        <CSVUpload description={"Test"}/>
         <Button color="transparent" simple justIcon onClick={this.createTransaction}>
           <Edit className={classes.underChartIcons} />
         </Button>
