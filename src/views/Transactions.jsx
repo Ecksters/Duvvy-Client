@@ -6,7 +6,6 @@ import FormControl from "@material-ui/core/FormControl";
 import Datetime from "react-datetime";
 import CustomInput from "components/CustomInput/CustomInput.jsx"
 
-
 import { connect } from "react-redux";
 import { mapStateToProps } from "store"
 import { createTransaction, updateTransaction, deleteTransaction } from "../actions/transactionActions";
@@ -28,7 +27,7 @@ import Card from "components/Card/Card.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardIcon from "components/Card/CardIcon.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
-import CustomSelect from "components/CustomSelect/CustomSelect.jsx";
+import CategorySelect from "components/CategorySelect/CategorySelect.jsx";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 import SweetAlert from "react-bootstrap-sweetalert";
 
@@ -188,7 +187,7 @@ class Transactions extends React.Component {
             </GridItem>
             <GridItem xs={6}>
               <label>Category</label>
-              <CustomSelect type="category" value={this.state.editTransactionCategory}/>
+              <CategorySelect transaction={this.state.transactionToModify}/>
             </GridItem>
           </GridContainer>
         </SweetAlert>
@@ -301,12 +300,16 @@ class Transactions extends React.Component {
                   },
                   {
                     Header: "Category",
-                    accessor: "category",
+                    accessor: "category_id",
                     style: {overflow: "visible"},
                     show: window.innerWidth > 600,
+                    filterMethod: (filter, row) => {
+                      const categoryName = this.props.categories.find((category) => category.id === row.category_id);
+                      return categoryName && categoryName.title.toLowerCase().indexOf(filter.value.toLowerCase()) >= 0;
+                    },
                     Cell: row => (
                       <div>
-                        <CustomSelect type="category" value={row.original.category_id} />
+                        <CategorySelect key={row.original.id} transaction={row.original}/>
                       </div>
                     )
                   },
