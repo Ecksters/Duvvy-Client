@@ -280,10 +280,6 @@ class Dashboard extends React.Component {
             </Card>
           </GridItem>
         </GridContainer>
-        <Button color="transparent" simple justIcon onClick={this.createTransaction}>
-          <Edit className={classes.underChartIcons} />
-        </Button>
-        {JSON.stringify(this.props.transactions)}
       </div>
     );
   }

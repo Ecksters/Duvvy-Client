@@ -53,6 +53,7 @@ class Sidebar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      openTools: this.activeRoute("/tools"),
       miniActive: true
     };
     this.activeRoute.bind(this);

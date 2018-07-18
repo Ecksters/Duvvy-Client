@@ -13,3 +13,6 @@
 
 div.sweet-alert {
   overflow: visible !important; }
+
+.ReactTable .rt-table {
+  overflow: visible; }
