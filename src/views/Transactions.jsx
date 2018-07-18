@@ -120,12 +120,13 @@ class Transactions extends React.Component {
           style={{ display: "block", marginTop: "-300px" }}
           title="Transaction"
           onConfirm={() => {
+            const category = this.props.categories.find((category) => category.title === this.state.editTransactionCategory)
             const newTransaction = {
                 id: this.state.transactionToModify.id,
                 date: this.state.editTransactionDate,
                 description: this.state.editTransactionDescription,
                 amount: this.state.editTransactionAmount,
-                category_id: this.state.editTransactionCategory
+                category_id: category ? category.id : null
               };
             if(newTransaction.date && newTransaction.description && newTransaction.amount) {
               if(this.state.creatingTransaction) {
@@ -187,7 +188,7 @@ class Transactions extends React.Component {
             </GridItem>
             <GridItem xs={6}>
               <label>Category</label>
-              <CategorySelect transaction={this.state.transactionToModify}/>
+              <CategorySelect onChange={(change) => this.setState({editTransactionCategory: change})} transaction={this.state.transactionToModify} newTransaction={this.state.creatingTransaction}/>
             </GridItem>
           </GridContainer>
         </SweetAlert>
@@ -339,6 +340,12 @@ class Transactions extends React.Component {
                   }
                 ]}
                 defaultPageSize={10}
+                defaultSorted={[
+                  {
+                    id: "date",
+                    desc: true
+                  }
+                ]}
                 showPaginationTop
                 showPaginationBottom={false}
                 className="-striped -highlight"
