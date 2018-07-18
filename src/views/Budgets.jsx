@@ -53,7 +53,7 @@ class Budgets extends React.Component {
   updateBudgetList() {
     return this.props.budgets.length > 0 ? this.props.budgets.map((budget) => {
       return (<BudgetDisplay delete={this.deleteBudget.bind(this)} edit={this.updateExistingBudget.bind(this)} key={budget.id} budget={budget}/>)})
-     : (<h3 style={{textAlign: "center"}}>No budgets found</h3>)
+     : (<h3 style={{textAlign: "center", width: "100%"}}>No budgets found</h3>)
   }
 
   updateExistingBudget(budget) {
