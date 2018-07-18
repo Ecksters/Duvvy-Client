@@ -13,7 +13,6 @@ export const readCategories = () => (dispatch) => {
 }
 
 export const updateCategory = (category) => (dispatch) => {
-  console.log(category);
   fetch(apiUrl + '/categories/' + category.id, {
     method: 'PUT',
     headers: {
