@@ -23,6 +23,7 @@ import appStyle from "assets/jss/material-dashboard-pro-react/layouts/dashboardS
 
 import logo from "assets/img/logo.png";
 import textLogo from "assets/img/text_logo.png";
+import { mapStateToProps } from "../store";
 
 
 
@@ -133,4 +134,4 @@ class Dashboard extends React.Component {
 }
 
 const styledDashboard = withStyles(appStyle)(Dashboard);
-export default connect(null, {readTransactions, readCategories, readBudgets})(styledDashboard);
+export default connect(mapStateToProps, {readTransactions, readCategories, readBudgets})(styledDashboard);

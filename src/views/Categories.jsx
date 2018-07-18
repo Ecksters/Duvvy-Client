@@ -2,18 +2,16 @@ import React from "react";
 // react component for creating dynamic tables
 import ReactTable from "react-table";
 
-import FormControl from "@material-ui/core/FormControl";
-import Datetime from "react-datetime";
 import CustomInput from "components/CustomInput/CustomInput.jsx"
 
 import { connect } from "react-redux";
 import { mapStateToProps } from "store"
-import { createTransaction, updateTransaction, deleteTransaction } from "../actions/transactionActions";
+import { createCategory, updateCategory, deleteCategory } from "../actions/categoryActions";
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 // @material-ui/icons
-import CreditCard from "@material-ui/icons/CreditCard";
+import DonutSmall from "@material-ui/icons/DonutSmall";
 import Edit from "@material-ui/icons/Edit";
 import Close from "@material-ui/icons/Close";
 import Check from "@material-ui/icons/Check"
@@ -27,7 +25,7 @@ import Card from "components/Card/Card.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardIcon from "components/Card/CardIcon.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
-import CategorySelect from "components/DatabaseSelect/CategorySelect.jsx";
+import BudgetSelect from "components/DatabaseSelect/BudgetSelect.jsx";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 import SweetAlert from "react-bootstrap-sweetalert";
 
@@ -44,26 +42,19 @@ const styles = {
   }
 };
 
-const formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 2
-});
-
-class Transactions extends React.Component {
+class Categories extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      categories: this.props.categories,
       transactions: this.props.transactions,
       br: false,
       alert: null,
       show: false,
-      creatingTransaction: false,
-      transactionToModify: null,
-      editTransactionDate: null,
-      editTransactionDescription: null,
-      editTransactionAmount: null,
-      editTransactionCategory: null
+      creatingCategory: false,
+      categoryToModify: null,
+      editCategoryTitle: null,
+      editCategoryBudget: null
     };
     this.hideAlert = this.hideAlert.bind(this);
     this.successDelete = this.successDelete.bind(this);
@@ -87,15 +78,15 @@ class Transactions extends React.Component {
           cancelBtnText="Cancel"
           showCancel
         >
-          There's no way to undo it once it's deleted!
+          Deleting a category will automatically remove all transactions from that category.
         </SweetAlert>
       )
     });
   }
   successDelete() {
-    this.props.deleteTransaction(this.state.transactionToModify);
+    this.props.deleteCategory(this.state.categoryToModify);
     this.setState({
-      transactionToModify: null,
+      categoryToModify: null,
       alert: (
         <SweetAlert
           success
@@ -107,7 +98,7 @@ class Transactions extends React.Component {
             this.props.classes.button + " " + this.props.classes.success
           }
         >
-          Transaction deleted.
+          Category deleted.
         </SweetAlert>
       )
     });
@@ -118,21 +109,19 @@ class Transactions extends React.Component {
         <SweetAlert
           showCancel
           style={{ display: "block", marginTop: "-300px" }}
-          title="Transaction"
+          title="Category"
           onConfirm={() => {
-            const category = this.props.categories.find((category) => category.title === this.state.editTransactionCategory)
-            const newTransaction = {
-                id: this.state.transactionToModify.id,
-                date: this.state.editTransactionDate,
-                description: this.state.editTransactionDescription,
-                amount: this.state.editTransactionAmount,
-                category_id: category ? category.id : null
+            const budget = this.props.budgets.find((budget) => budget.title === this.state.editCategoryBudget)
+            const newCategory = {
+                id: this.state.categoryToModify.id,
+                title: this.state.editCategoryTitle,
+                budget_id: budget ? budget.id : null
               };
-            if(newTransaction.date && newTransaction.description && newTransaction.amount) {
-              if(this.state.creatingTransaction) {
-                this.props.createTransaction(newTransaction);
+            if(newCategory.title) {
+              if(this.state.creatingCategory) {
+                this.props.createCategory(newCategory);
               } else {
-                this.props.updateTransaction(newTransaction);
+                this.props.updateCategory(newCategory);
               }
               this.showNotification("br");
               this.hideAlert();
@@ -147,48 +136,22 @@ class Transactions extends React.Component {
           }>
           <GridContainer style={{textAlign: "left"}}>
             <GridItem xs={6}>
-              <FormControl fullWidth>
-                <label>Date</label>
-                <Datetime
-                  defaultValue={this.state.editTransactionDate}
-                  timeFormat={false}
-                  dateFormat="YYYY-MM-DD"
-                  onChange={(date) => this.setState({editTransactionDate: date.format("YYYY-MM-DD")})}
-                  inputProps={{ placeholder: "YYYY-MM-DD",}}
-                />
-              </FormControl>
-            </GridItem>
-            <GridItem xs={6}>
-              <label>Description</label>
+              <label>Title</label>
               <CustomInput
                 formControlProps={{
                   fullWidth: true
                 }}
                 inputProps={{
-                  onChange: (e) => this.setState({editTransactionDescription: e.target.value}),
-                  defaultValue: this.state.editTransactionDescription,
+                  onChange: (e) => this.setState({editCategoryTitle: e.target.value}),
+                  defaultValue: this.state.editCategoryTitle,
                   style: {marginTop: '-25px'},
                   type: "text"
                 }}
               />
             </GridItem>
             <GridItem xs={6}>
-              <label>Amount</label>
-              <CustomInput
-                formControlProps={{
-                  fullWidth: true
-                }}
-                inputProps={{
-                  onChange: (e) => this.setState({editTransactionAmount: e.target.value}),
-                  defaultValue: this.state.editTransactionAmount,
-                  style: {marginTop: '-25px'},
-                  type: "text"
-                }}
-              />
-            </GridItem>
-            <GridItem xs={6}>
-              <label>Category</label>
-              <CategorySelect onChange={(change) => this.setState({editTransactionCategory: change})} transaction={this.state.transactionToModify} newTransaction={this.state.creatingTransaction}/>
+              <label>Budget</label>
+              <BudgetSelect onChange={(change) => this.setState({editCategoryBudget: change})} category={this.state.categoryToModify} newCategory={this.state.creatingCategory}/>
             </GridItem>
           </GridContainer>
         </SweetAlert>
@@ -216,18 +179,16 @@ class Transactions extends React.Component {
     }
   }
 
-  updateTransaction(row, event) {
+  updateCategory(row, event) {
       this.setState({
-        transactionToModify: row.original,
-        editTransactionDescription: row.original.description,
-        editTransactionAmount: row.original.amount,
-        editTransactionDate: row.original.date,
-        editTransactionCategory: row.original.category_id
+        categoryToModify: row.original,
+        editCategoryTitle: row.original.title,
+        editCategoryBudget: row.original.budget_id
       }, this.inputAlert.bind(this));
   }
-  deleteTransaction(row, event) {
+  deleteCategory(row, event) {
     this.setState({
-      transactionToModify: row.original
+      categoryToModify: row.original
     });
     return this.warningWithConfirmMessage.bind(this)();
   }
@@ -240,7 +201,7 @@ class Transactions extends React.Component {
           place="br"
           color="success"
           icon={Check}
-          message={"Transaction " + (this.state.creatingTransaction ? "created." : "updated.")}
+          message={"Category " + (this.state.creatingCategory ? "created." : "updated.")}
           open={this.state.br}
           closeNotification={() => this.setState({ br: false })}
           close
@@ -249,14 +210,14 @@ class Transactions extends React.Component {
           <Card>
             <CardHeader color="primary" icon>
               <CardIcon color="primary">
-                <CreditCard />
+                <DonutSmall />
               </CardIcon>
             </CardHeader>
             <CardBody>
               <Button fullWidth color="info"
                 onClick={(e) => {
-                  this.setState({creatingTransaction: true});
-                  this.updateTransaction({
+                  this.setState({creatingCategory: true});
+                  this.updateCategory({
                   original: {
                     description: "",
                     amount: "",
@@ -265,52 +226,40 @@ class Transactions extends React.Component {
                   }
                 })}}
                 > 
-                <Add />Add New Transaction
+                <Add />Add New Category
               </Button>
               <ReactTable
-                data={this.props.transactions}
-                noDataText="No Transactions Found"
+                data={this.props.categories}
+                noDataText="No Categories Found"
                 filterable
                 getTrProps={(state, rowInfo, column) => {
                   return {
                     onClick: (e) => {
                       if(window.innerWidth < 600) {
-                        this.setState({creatingTransaction: false});
-                        this.updateTransaction(rowInfo, e);
+                        this.setState({creatingCategory: false});
+                        this.updateCategory(rowInfo, e);
                       }
                     }
                   };
                 }}
                 columns={[
                   {
-                    Header: "Date",
-                    accessor: "date",
-                    width: 90
-                  },
-                  {
-                    Header: "Description",
-                    accessor: "description",
+                    Header: "Category",
+                    accessor: "title",
                     filterMethod: (filter, row) => 
                       row[filter.id].toLowerCase().indexOf(filter.value.toLowerCase()) >= 0
                   },
                   {
-                    Header: "Amount",
-                    accessor: "amount",
-                    width: 90,
-                    Cell: row => formatter.format(row.value)
-                  },
-                  {
-                    Header: "Category",
-                    accessor: "category_id",
+                    Header: "Budget",
+                    accessor: "budget_id",
                     style: {overflow: "visible"},
-                    show: window.innerWidth > 600,
                     filterMethod: (filter, row) => {
-                      const categoryName = this.props.categories.find((category) => category.id === row.category_id);
-                      return categoryName && categoryName.title.toLowerCase().indexOf(filter.value.toLowerCase()) >= 0;
+                      const budgetName = this.props.budgets.find((budget) => budget.id === row.budget_id);
+                      return budgetName && budgetName.title.toLowerCase().indexOf(filter.value.toLowerCase()) >= 0;
                     },
                     Cell: row => (
                       <div>
-                        <CategorySelect key={row.original.id} transaction={row.original}/>
+                        <BudgetSelect key={row.original.id} category={row.original}/>
                       </div>
                     )
                   },
@@ -319,19 +268,18 @@ class Transactions extends React.Component {
                     sortable: false,
                     filterable: false,
                     width: 90,
-                    show: window.innerWidth > 600,
                     Cell: row => (
                       <div className="actions-right">
                         <Button justIcon round size="sm" color="warning"
                           onClick={(e) => {
-                            this.setState({creatingTransaction: false});
-                            this.updateTransaction(row, e);
+                            this.setState({creatingCategory: false});
+                            this.updateCategory(row, e);
                             }}> 
                           <Edit />
                         </Button>
                         <Button justIcon round size="sm" color="danger"
                           value={row}
-                          onClick={(e) => this.deleteTransaction(row, e)}
+                          onClick={(e) => this.deleteCategory(row, e)}
                           > 
                           <Close />
                         </Button>
@@ -342,8 +290,8 @@ class Transactions extends React.Component {
                 defaultPageSize={10}
                 defaultSorted={[
                   {
-                    id: "date",
-                    desc: true
+                    id: "title",
+                    desc: false
                   }
                 ]}
                 showPaginationTop
@@ -358,4 +306,4 @@ class Transactions extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, {createTransaction, updateTransaction, deleteTransaction})(withStyles(styles)(Transactions));
+export default connect(mapStateToProps, {createCategory, updateCategory, deleteCategory})(withStyles(styles)(Categories));

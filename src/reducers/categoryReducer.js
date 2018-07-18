@@ -1,7 +1,11 @@
-import { CREATE_CATEGORY, CREATE_CATEGORIES, READ_CATEGORIES } from "../actions/types"
+import { CREATE_CATEGORY, CREATE_CATEGORIES, READ_CATEGORIES, UPDATE_CATEGORY, DELETE_CATEGORY } from "../actions/types"
 
 const initialState = {
     categories: []
+};
+
+const updateCategory = (updated) => (category) => {
+  return category.id === updated.id ? updated : category;
 };
 
 export default function(state = initialState, action) {
@@ -11,6 +15,10 @@ export default function(state = initialState, action) {
         case CREATE_CATEGORY:
         case CREATE_CATEGORIES:
           return state.concat(action.payload);
+        case UPDATE_CATEGORY:
+          return state.map(updateCategory(action.payload));
+        case DELETE_CATEGORY:
+          return state.filter((category) => category.id !== action.payload.id);
         default:
           return state;
     }

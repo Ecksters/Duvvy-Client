@@ -10,17 +10,12 @@ import ListItem from "@material-ui/core/ListItem";
 import footerStyle from "assets/jss/material-dashboard-pro-react/components/footerStyle";
 
 function Footer({ ...props }) {
-  const { classes, fluid, white, rtlActive } = props;
+  const { classes, fluid, white } = props;
   var container = cx({
     [classes.container]: !fluid,
     [classes.containerFluid]: fluid,
     [classes.whiteColor]: white
   });
-  var anchor =
-    classes.a +
-    cx({
-      [" " + classes.whiteColor]: white
-    });
   var block = cx({
     [classes.block]: true,
     [classes.whiteColor]: white
@@ -31,35 +26,14 @@ function Footer({ ...props }) {
         <div className={classes.left}>
           <List className={classes.list}>
             <ListItem className={classes.inlineBlock}>
-              <a href="#home" className={block}>
-                {rtlActive ? "الصفحة الرئيسية" : "Home"}
-              </a>
-            </ListItem>
-            <ListItem className={classes.inlineBlock}>
-              <a href="#company" className={block}>
-                {rtlActive ? "شركة" : "Company"}
-              </a>
-            </ListItem>
-            <ListItem className={classes.inlineBlock}>
-              <a href="#portfolio" className={block}>
-                {rtlActive ? "بعدسة" : "Portfolio"}
-              </a>
-            </ListItem>
-            <ListItem className={classes.inlineBlock}>
-              <a href="#blog" className={block}>
-                {rtlActive ? "مدونة" : "Blog"}
+              <a href="https://danieleck.com" target="_blank" rel="noopener noreferrer" className={block}>
+                Daniel Eck's Portfolio
               </a>
             </ListItem>
           </List>
         </div>
         <p className={classes.right}>
-          &copy; {1900 + new Date().getYear()}{" "}
-          <a href="https://www.creative-tim.com" className={anchor}>
-            {rtlActive ? "توقيت الإبداعية" : "Creative Tim"}
-          </a>
-          {rtlActive
-            ? ", مصنوعة مع الحب لشبكة الإنترنت أفضل"
-            : ", made with love for a better web"}
+          Created by <a href="https://ecksters.com" target="_blank" rel="noopener noreferrer">Ecksters</a>, 2018
         </p>
       </div>
     </footer>
@@ -70,7 +44,6 @@ Footer.propTypes = {
   classes: PropTypes.object.isRequired,
   fluid: PropTypes.bool,
   white: PropTypes.bool,
-  rtlActive: PropTypes.bool
 };
 
 export default withStyles(footerStyle)(Footer);
